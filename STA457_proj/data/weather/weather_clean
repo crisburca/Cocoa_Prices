@@ -1,0 +1,48 @@
+
+#### Load
+ecuador <- read_csv("./data/weather/Ecuador_data.csv")
+nigeria <- read_csv("./data/weather/Nigeria_data.csv")
+cameroon <- read_csv("./data/weather/Cameroon_data.csv")
+
+
+#### Clean
+ecuador <- ecuador %>%
+  rename(Date = DATE,
+         TAVG = TEMP)
+
+nigeria <- nigeria %>%
+  rename(Date = DATE,
+         TAVG = TEMP)
+
+cameroon <- cameroon %>%
+  rename(Date = DATE,
+         TAVG = TEMP)
+
+ecuador <- ecuador %>%
+  group_by(Date) %>%
+  summarise(TAVG_EC = mean(TAVG, na.rm = FALSE))
+
+nigeria <- nigeria %>%
+  group_by(Date) %>%
+  summarise(TAVG_NI = mean(TAVG, na.rm = FALSE))
+
+cameroon <- cameroon %>%
+  group_by(Date) %>%
+  summarise(TAVG_CAM = mean(TAVG, na.rm = FALSE))
+
+
+#### Filter days
+ecuador <- filter(ecuador, Date >= start_date & Date <= end_date)
+nigeria <- filter(nigeria, Date >= start_date & Date <= end_date)
+cameroon <- filter(cameroon, Date >= start_date & Date <= end_date)
+
+
+#### Merge
+merged_data <- cocoa_data %>%
+  left_join(ghana, by = "Date") %>%
+  left_join(icoast, by = "Date") %>%
+  left_join(ecuador, by = "Date") %>%
+  left_join(nigeria, by = "Date") %>%
+  left_join(cameroon, by = "Date") %>%
+  left_join(ghana_curr, by = "Date") %>%
+  left_join(xof_curr, by = "Date")
